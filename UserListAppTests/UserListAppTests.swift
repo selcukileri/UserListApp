@@ -10,12 +10,41 @@ import XCTest
 
 final class UserListAppTests: XCTestCase {
 
+    var viewModel: UserViewModel!
+    
     override func setUpWithError() throws {
-        // Put setup code here. This method is called before the invocation of each test method in the class.
+        super.setUp()
+        viewModel = UserViewModel()
     }
 
     override func tearDownWithError() throws {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
+        viewModel = nil
+        super.tearDown()
+    }
+    
+    /// Users dizisi dolu olduğunda (.success)
+    func testFetchUsers_Success(){
+        let expectation = XCTestExpectation(description: "Users should be fetched successfully")
+        
+        viewModel.onUsersFetched = {
+            XCTAssertFalse(self.viewModel.users.isEmpty, "Users array shouldn't be empty")
+            expectation.fulfill()
+        }
+        viewModel.fetchUsers()
+        wait(for: [expectation], timeout: 5.0)
+    }
+    
+    /// Users dizisi boş olduğunda (.failure)
+    func testFetchUsers_Failure(){
+        let expectation = XCTestExpectation(description: "API should return an error")
+        
+        viewModel.onError = { error in
+            XCTAssertNotNil(error, "Users array shouldn't be empty")
+            expectation.fulfill()
+        }
+        /// Başarısız olması için URL'i bozup deneyebiliriz. Ya da başka bir senaryoyla tabii.
+        viewModel.fetchUsers()
+        wait(for: [expectation], timeout: 5.0)
     }
 
     func testExample() throws {

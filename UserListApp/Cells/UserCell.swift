@@ -11,18 +11,8 @@ class UserCell: UITableViewCell {
     
     static let userReuseID = "UserCell"
     
-    private lazy var usernameLabel: UILabel = {
-        let label = UILabel()
-        label.textColor = .label
-        label.font = UIFont.systemFont(ofSize: 16, weight: .semibold)
-        return label
-    }()
-    private lazy var emailLabel: UILabel = {
-        let label = UILabel()
-        label.textColor = .secondaryLabel
-        label.font = UIFont.systemFont(ofSize: 16, weight: .medium)
-        return label
-    }()
+    private lazy var usernameLabel = makeUsernameLabel()
+    private lazy var emailLabel = makeEmailLabel()
 
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -33,17 +23,29 @@ class UserCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
+    private func makeUsernameLabel() -> UILabel {
+        let label = UILabel()
+        label.textColor = .label
+        label.font = UIFont.systemFont(ofSize: 16, weight: .semibold)
+        return label
+    }
+    
+    private func makeEmailLabel() -> UILabel {
+        let label = UILabel()
+        label.textColor = .secondaryLabel
+        label.font = UIFont.systemFont(ofSize: 16, weight: .medium)
+        return label
+    }
+    
     private func setupUI(){
-        addSubview(usernameLabel)
-        addSubview(emailLabel)
+        contentView.addSubviews(usernameLabel,emailLabel)
         
         /// Neden snapkit kullandım?
         /// Çünkü snapkit sektörde çok yaygın kullanılan bir kütüphane, auto layout yönetimini kolaylaştırmak için kullanılıyor.
         /// Okunabilirliği arttırıyor.
         
         usernameLabel.snp.makeConstraints { make in
-            make.top.equalToSuperview().offset(16)
-            make.leading.equalToSuperview().offset(16)
+            make.top.leading.equalToSuperview().offset(16)
             make.height.equalTo(20)
         }
         
